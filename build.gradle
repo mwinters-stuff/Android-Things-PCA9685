@@ -1,0 +1,68 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+ext {
+    compileSdkVersion = 24
+    buildToolsVersion = "25.0.2"
+    targetSdkVersion = 24
+    minSdkVersion = 14
+    supportVersion = "24.2.1"
+    version = getTheVersion()
+    buildNumber = getTheBuildNumber()
+
+    bintrayRepo = 'maven'
+    publishedGroupId = 'nz.org.winters'
+    siteUrl = 'https://github.com/wintersandroid/Android-Things-PCA9685'
+    artifact = "libRF24"
+    libraryDescription = "PCA9685 Servo Lib for Android Things"
+    libraryVersion = getTheVersion()
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.novoda:bintray-release:0.4.0'
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+def static getBuildMajor(){
+    return 0;
+}
+
+def getTheVersion() {
+    def buildMajor = getBuildMajor();
+    def buildNumber = getTheBuildNumber();
+    if( buildNumber == 0)
+    {
+        return "${buildMajor}.${buildNumber}-SNAPSHOT";
+
+    }else{
+        return "${buildMajor}.${buildNumber}";
+    }
+
+}
+
+def getTheBuildNumber(){
+    return hasProperty('BUILD_NUMBER') ? BUILD_NUMBER.toInteger() : 0;
+}
+
+def getBintrayUser(){
+    return hasProperty('BINTRAY_USER') ? BINTRAY_USER : ""
+}
+
+def getBintrayApiKey(){
+    return hasProperty('BINTRAY_KEY') ? BINTRAY_KEY : ""
+}
