@@ -1,14 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "nz.org.winters.android.androidthingspca9685"
-        minSdkVersion 24
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion rootProject.ext.minSdkVersion
+
+        versionCode rootProject.ext.buildNumber
+        versionName rootProject.ext.version
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -20,17 +22,21 @@ android {
 }
 
 dependencies {
-    provided 'com.google.android.things:androidthings:0.3-devpreview'
-    annotationProcessor "org.androidannotations:androidannotations:4.3.0"
-    compile "org.androidannotations:androidannotations-api:4.3.0"
-    compile 'com.appyvet:materialrangebar:1.3'
-    compile 'com.google.guava:guava:20.0'
+    implementation 'com.google.code.findbugs:jsr305:2.0.1'
+    provided "com.google.android.things:androidthings:${rootProject.ext.thingsVersion}"
+    annotationProcessor "org.androidannotations:androidannotations:${rootProject.ext.annotationsVersion}"
+    implementation "org.androidannotations:androidannotations-api:${rootProject.ext.annotationsVersion}"
+    implementation "com.appyvet:materialrangebar:1.3"
+    implementation "com.google.guava:guava:23.0-android"
 
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+
+    testProvided "com.google.android.things:androidthings:${rootProject.ext.thingsVersion}"
+
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:${rootProject.ext.espressoVersion}", {
+        exclude group: "com.android.support", module: "support-annotations"
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    testCompile 'junit:junit:4.12'
-    compile project(path: ':libPCA9685')
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportVersion}"
+    testImplementation "junit:junit:4.12"
+    implementation project(path: ":libPCA9685")
 }

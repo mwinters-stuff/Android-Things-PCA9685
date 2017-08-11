@@ -1,10 +1,16 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 ext {
-    compileSdkVersion = 24
-    buildToolsVersion = "25.0.2"
-    targetSdkVersion = 24
-    minSdkVersion = 14
-    supportVersion = "24.2.1"
+    compileSdkVersion = 26
+    buildToolsVersion = "26.0.1"
+    targetSdkVersion = 26
+    minSdkVersion = 26
+    supportVersion = "26.0.1"
+    thingsVersion = "0.5-devpreview"
+    espressoVersion = "3.0.0"
+    testRunnerVersion = "1.0.0"
+    mockitoVersion = "2.8.9"
+    annotationsVersion = "4.3.1"
+    constraintLayoutVersion = "1.0.2"
     version = getTheVersion()
     buildNumber = getTheBuildNumber()
 
@@ -19,10 +25,14 @@ ext {
 buildscript {
     repositories {
         jcenter()
+        maven {
+            url 'https://maven.google.com'
+        }
+
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
-        classpath 'com.novoda:bintray-release:0.4.0'
+        classpath 'com.android.tools.build:gradle:3.0.0-beta1'
+        classpath 'com.novoda:bintray-release:0.5.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -31,6 +41,10 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven {
+            url 'https://maven.google.com'
+        }
+
     }
 }
 
@@ -39,24 +53,24 @@ task clean(type: Delete) {
 }
 
 def static getBuildMajor(){
-    return 0;
+    return 0
 }
 
 def getTheVersion() {
-    def buildMajor = getBuildMajor();
-    def buildNumber = getTheBuildNumber();
+    def buildMajor = getBuildMajor()
+    def buildNumber = getTheBuildNumber()
     if( buildNumber == 0)
     {
-        return "${buildMajor}.${buildNumber}-SNAPSHOT";
+        return "${buildMajor}.${buildNumber}-SNAPSHOT"
 
     }else{
-        return "${buildMajor}.${buildNumber}";
+        return "${buildMajor}.${buildNumber}"
     }
 
 }
 
 def getTheBuildNumber(){
-    return hasProperty('BUILD_NUMBER') ? BUILD_NUMBER.toInteger() : 0;
+    return hasProperty('BUILD_NUMBER') ? BUILD_NUMBER.toInteger() : 0
 }
 
 def getBintrayUser(){
