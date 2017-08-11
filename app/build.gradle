@@ -31,8 +31,6 @@ dependencies {
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
-    testProvided "com.google.android.things:androidthings:${rootProject.ext.thingsVersion}"
-
     androidTestImplementation("com.android.support.test.espresso:espresso-core:${rootProject.ext.espressoVersion}", {
         exclude group: "com.android.support", module: "support-annotations"
     })
