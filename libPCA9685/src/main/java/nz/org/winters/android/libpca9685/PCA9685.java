@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.things.pio.I2cDevice;
-import com.google.android.things.pio.PeripheralManagerService;
+import com.google.android.things.pio.PeripheralManager;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class PCA9685 implements Closeable{
 
   private I2cDevice i2cDevice;
 
-  public PCA9685(byte address, @NonNull PeripheralManagerService manager) throws IOException, InterruptedException {
+  public PCA9685(byte address, @NonNull PeripheralManager manager) throws IOException, InterruptedException {
 
     List<String> deviceList = manager.getI2cBusList();
     if (deviceList.isEmpty()) {

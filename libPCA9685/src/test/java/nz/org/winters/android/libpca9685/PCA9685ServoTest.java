@@ -2,7 +2,7 @@ package nz.org.winters.android.libpca9685;
 
 
 import com.google.android.things.pio.I2cDevice;
-import com.google.android.things.pio.PeripheralManagerService;
+import com.google.android.things.pio.PeripheralManager;
 
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +33,7 @@ public class PCA9685ServoTest {
 
 
   @Mock
-  public PeripheralManagerService peripheralManagerServiceMock;
+  public PeripheralManager peripheralManagerServiceMock;
 
   @Mock
   public I2cDevice i2cDeviceMock;

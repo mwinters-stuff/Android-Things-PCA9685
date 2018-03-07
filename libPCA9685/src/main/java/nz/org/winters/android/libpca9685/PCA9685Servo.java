@@ -2,7 +2,7 @@ package nz.org.winters.android.libpca9685;
 
 import android.support.annotation.NonNull;
 
-import com.google.android.things.pio.PeripheralManagerService;
+import com.google.android.things.pio.PeripheralManager;
 
 import java.io.IOException;
 
@@ -18,7 +18,7 @@ public class PCA9685Servo extends PCA9685 {
   private int minAngle;
   private int maxAngle;
 
-  public PCA9685Servo(byte address, @NonNull PeripheralManagerService manager) throws IOException, InterruptedException {
+  public PCA9685Servo(byte address, @NonNull PeripheralManager manager) throws IOException, InterruptedException {
     super(address, manager);
   }
 
