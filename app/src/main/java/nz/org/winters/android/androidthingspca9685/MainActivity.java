@@ -17,13 +17,21 @@
 package nz.org.winters.android.androidthingspca9685;
 
 import android.app.Activity;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.appyvet.rangebar.RangeBar;
-import com.google.android.things.pio.PeripheralManagerService;
+import com.fastaccess.permission.base.PermissionHelper;
+import com.fastaccess.permission.base.callback.OnPermissionCallback;
+import com.google.android.things.device.ScreenManager;
+import com.google.android.things.device.TimeManager;
+import com.google.android.things.pio.PeripheralManager;
 import com.google.common.base.Joiner;
 
 import org.androidannotations.annotations.AfterViews;
@@ -61,7 +69,7 @@ import nz.org.winters.android.libpca9685.PCA9685Servo;
  */
 
 @EActivity(R.layout.main_activity)
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnPermissionCallback {
   private static final String TAG = MainActivity.class.getSimpleName();
 
   @Pref
@@ -100,6 +108,27 @@ public class MainActivity extends Activity {
 
   private List<Integer> channelLeftAngles = new ArrayList<>(16);
   private List<Integer> channelRightAngles = new ArrayList<>(16);
+  private PermissionHelper permissionHelper;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+
+    permissionHelper = PermissionHelper.getInstance(this, this);
+    permissionHelper.setForceAccepting(true).request("com.google.android.things.permission.MODIFY_SCREEN_SETTINGS");
+    permissionHelper.setForceAccepting(true).request("com.google.android.things.permission.CHANGE_TIME");
+
+    // for rpi 7 inch touch screen, mounted upside down and a better density.
+    ScreenManager screenManager = ScreenManager.getInstance(Display.DEFAULT_DISPLAY);
+
+    screenManager.setFontScale(1.0f);
+    screenManager.setDisplayDensity(120);
+    screenManager.lockRotation(ScreenManager.ROTATION_180);
+
+    TimeManager timeManager = TimeManager.getInstance();
+    timeManager.setTimeZone("Pacific/Auckland");
+  }
 
   @AfterViews
   protected void onAfterViews() {
@@ -137,7 +166,7 @@ public class MainActivity extends Activity {
     spinnerChannel.setSelection(appPrefs.selectedChannel().get());
 
     try {
-      PeripheralManagerService peripheralManagerService = new PeripheralManagerService();
+      PeripheralManager peripheralManagerService = PeripheralManager.getInstance();
 
 
       servo = new PCA9685Servo(PCA9685Servo.PCA9685_ADDRESS, peripheralManagerService);
@@ -224,6 +253,44 @@ public class MainActivity extends Activity {
 
   int getChannelRightAngle(int channel) {
     return channelRightAngles.get(channel);
+  }
+
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                         @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+  }
+
+  @Override
+  public void onPermissionGranted(@NonNull String[] permissionName) {
+    Log.d(TAG, "onPermissionGranted: " + permissionName[0]);
+  }
+
+  @Override
+  public void onPermissionDeclined(@NonNull String[] permissionName) {
+    Log.d(TAG, "onPermissionDeclined: " + permissionName[0]);
+  }
+
+  @Override
+  public void onPermissionPreGranted(@NonNull String permissionsName) {
+    Log.d(TAG, "onPermissionPreGranted: " + permissionsName);
+  }
+
+  @Override
+  public void onPermissionNeedExplanation(@NonNull String permissionName) {
+    Log.d(TAG, "onPermissionNeedExplanation: " + permissionName);
+  }
+
+  @Override
+  public void onPermissionReallyDeclined(@NonNull String permissionName) {
+    Log.d(TAG, "onPermissionReallyDeclined: " + permissionName);
+  }
+
+  @Override
+  public void onNoPermissionNeeded() {
+    Log.d(TAG, "onNoPermissionNeeded");
   }
 
 }
