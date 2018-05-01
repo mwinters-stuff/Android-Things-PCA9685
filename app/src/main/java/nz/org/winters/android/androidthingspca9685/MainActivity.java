@@ -18,28 +18,20 @@ package nz.org.winters.android.androidthingspca9685;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Display;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.appyvet.rangebar.RangeBar;
 import com.fastaccess.permission.base.PermissionHelper;
 import com.fastaccess.permission.base.callback.OnPermissionCallback;
-import com.google.android.things.device.ScreenManager;
 import com.google.android.things.device.TimeManager;
 import com.google.android.things.pio.PeripheralManager;
 import com.google.common.base.Joiner;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ItemSelect;
-import org.androidannotations.annotations.ViewById;
-import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +48,7 @@ import nz.org.winters.android.libpca9685.PCA9685Servo;
  * Android Things peripheral APIs are accessible through the class
  * PeripheralManagerService. For example, the snippet below will open a GPIO pin and
  * set it to HIGH:
- * <p>
+ *
  * <pre>{@code
  * PeripheralManagerService service = new PeripheralManagerService();
  * mLedGpio = service.openGpio("BCM6");
@@ -68,20 +60,20 @@ import nz.org.winters.android.libpca9685.PCA9685Servo;
  * is available.
  */
 
-@EActivity(R.layout.main_activity)
+//@EActivity(R.layout.main_activity)
 public class MainActivity extends Activity implements OnPermissionCallback {
   private static final String TAG = MainActivity.class.getSimpleName();
 
-  @Pref
-  AppPrefs_ appPrefs;
+  //    @Pref
+  AppPrefs appPrefs;
 
-  @ViewById(R.id.seekBar)
+  //  @ViewById(R.id.seekBar)
   RangeBar rangeBar;
 
-  @ViewById(R.id.textView)
+  //  @ViewById(R.id.textView)
   TextView textView;
 
-  @ViewById(R.id.spinnerChannel)
+  //  @ViewById(R.id.spinnerChannel)
   Spinner spinnerChannel;
 
   private static final int SERVO_MIN = 145;
@@ -113,31 +105,48 @@ public class MainActivity extends Activity implements OnPermissionCallback {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
+    setContentView(R.layout.main_activity);
+    appPrefs = new AppPrefs(this);
 
     permissionHelper = PermissionHelper.getInstance(this, this);
     permissionHelper.setForceAccepting(true).request("com.google.android.things.permission.MODIFY_SCREEN_SETTINGS");
     permissionHelper.setForceAccepting(true).request("com.google.android.things.permission.CHANGE_TIME");
-
-    // for rpi 7 inch touch screen, mounted upside down and a better density.
-    ScreenManager screenManager = ScreenManager.getInstance(Display.DEFAULT_DISPLAY);
-
-    screenManager.setFontScale(1.0f);
-    screenManager.setDisplayDensity(120);
-    screenManager.lockRotation(ScreenManager.ROTATION_180);
+    permissionHelper.setForceAccepting(true).request("com.google.android.things.permission.USE_PERIPHERAL_IO");
 
     TimeManager timeManager = TimeManager.getInstance();
     timeManager.setTimeZone("Pacific/Auckland");
-  }
 
-  @AfterViews
-  protected void onAfterViews() {
+    rangeBar = findViewById(R.id.seekBar);
+    textView = findViewById(R.id.textView);
+    spinnerChannel = findViewById(R.id.spinnerChannel);
+
+    findViewById(R.id.buttonSetLeft).setOnClickListener(v -> onButtonSetLeftClick());
+
+    findViewById(R.id.buttonSetRight).setOnClickListener(v -> onButtonSetRightClick());
+
+    spinnerChannel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        onItemSelect(position);
+      }
+
+      @Override
+      public void onNothingSelected(AdapterView<?> parent) {
+
+      }
+    });
+
+
+//  }
+//
+//  @AfterViews
+//  protected void onAfterViews() {
     channelLeftAngles.clear();
-    if (!appPrefs.channelAnglesLeft().get().isEmpty()) {
+    if (!appPrefs.channelAnglesLeft().isEmpty()) {
       TextUtils.StringSplitter splitter = new TextUtils.SimpleStringSplitter('|');
 
       // Once per string to split
-      splitter.setString(appPrefs.channelAnglesLeft().get());
+      splitter.setString(appPrefs.channelAnglesLeft());
       for (String s : splitter) {
         channelLeftAngles.add(Integer.parseInt(s));
       }
@@ -147,12 +156,12 @@ public class MainActivity extends Activity implements OnPermissionCallback {
       }
     }
 
-    if (!appPrefs.channelAnglesRight().get().isEmpty()) {
+    if (!appPrefs.channelAnglesRight().isEmpty()) {
       channelRightAngles.clear();
       TextUtils.StringSplitter splitter = new TextUtils.SimpleStringSplitter('|');
 
       // Once per string to split
-      splitter.setString(appPrefs.channelAnglesRight().get());
+      splitter.setString(appPrefs.channelAnglesRight());
       for (String s : splitter) {
         channelRightAngles.add(Integer.parseInt(s));
       }
@@ -163,7 +172,7 @@ public class MainActivity extends Activity implements OnPermissionCallback {
     }
 
     rangeBar.setOnRangeBarChangeListener(new RangeBarChangeListener());
-    spinnerChannel.setSelection(appPrefs.selectedChannel().get());
+    spinnerChannel.setSelection(appPrefs.selectedChannel());
 
     try {
       PeripheralManager peripheralManagerService = PeripheralManager.getInstance();
@@ -191,37 +200,35 @@ public class MainActivity extends Activity implements OnPermissionCallback {
 
   }
 
-  @Click(R.id.buttonSetLeft)
+  //  @Click(R.id.buttonSetLeft)
   void onButtonSetLeftClick() {
     try {
-      
-      if(servo !=null) {
+
+      if (servo != null) {
         servo.setServoAngle(usingChannel, getChannelLeftAngle(usingChannel));
       }
     } catch (IOException e) { // NOSONAR - logged with android.
-      Log.d(TAG,"Exception on Left Click: " + e.getMessage());
+      Log.d(TAG, "Exception on Left Click: " + e.getMessage());
     }
   }
 
-  @Click(R.id.buttonSetRight)
+  //  @Click(R.id.buttonSetRight)
   void onButtonSetRightClick() {
     try {
-      if(servo !=null) {
+      if (servo != null) {
         servo.setServoAngle(usingChannel, getChannelRightAngle(usingChannel));
       }
     } catch (IOException e) { // NOSONAR - logged with android.
-      Log.d(TAG,"Exception on Right Click: " + e.getMessage());
+      Log.d(TAG, "Exception on Right Click: " + e.getMessage());
     }
   }
 
-  @ItemSelect(R.id.spinnerChannel)
-  void onItemSelect(boolean selected, int position) {
-    if(selected) {
-      usingChannel = position;
-      rangeBar.setRangePinsByIndices(getChannelLeftAngle(usingChannel),getChannelRightAngle(usingChannel));
-      appPrefs.selectedChannel().put(position);
-      updateText();
-    }
+  //  @ItemSelect(R.id.spinnerChannel)
+  void onItemSelect(int position) {
+    usingChannel = position;
+    rangeBar.setRangePinsByIndices(getChannelLeftAngle(usingChannel), getChannelRightAngle(usingChannel));
+    appPrefs.selectedChannel(position);
+    updateText();
   }
 
   private void updateText() {
@@ -239,12 +246,12 @@ public class MainActivity extends Activity implements OnPermissionCallback {
 
   private void setChannelLeftAngle(int channel, int angle) {
     channelLeftAngles.set(channel, angle);
-      appPrefs.channelAnglesLeft().put(Joiner.on('|').join(channelLeftAngles));
+    appPrefs.channelAnglesLeft(Joiner.on('|').join(channelLeftAngles));
   }
 
   private void setChannelRightAngle(int channel, int angle) {
     channelRightAngles.set(channel, angle);
-       appPrefs.channelAnglesRight().put(Joiner.on('|').join(channelRightAngles));
+    appPrefs.channelAnglesRight(Joiner.on('|').join(channelRightAngles));
   }
 
   int getChannelLeftAngle(int channel) {

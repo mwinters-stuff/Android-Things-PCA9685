@@ -1,34 +1,48 @@
 package nz.org.winters.android.androidthingspca9685;
 
-import org.androidannotations.annotations.sharedpreferences.DefaultInt;
-import org.androidannotations.annotations.sharedpreferences.DefaultString;
-import org.androidannotations.annotations.sharedpreferences.DefaultStringSet;
-import org.androidannotations.annotations.sharedpreferences.SharedPref;
-
-import java.util.List;
-import java.util.Set;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 /**
  * Created by mathew on 17/01/17.
  * Copyright 2017 Mathew Winters
  */
 
-@SharedPref(SharedPref.Scope.APPLICATION_DEFAULT)
-public interface AppPrefs {
-//  @DefaultInt(0)
-//  int angleLeft();
-//
-//  @DefaultInt(0)
-//  int angleRight();
+class AppPrefs {
+  private final SharedPreferences sharedPref;
 
-  @DefaultInt(0)
-  int selectedChannel();
+  AppPrefs(Context context){
+    sharedPref = context.getSharedPreferences("test",Context.MODE_PRIVATE);
+  }
 
-  @DefaultString("")
-  String channelAnglesLeft();
+  int selectedChannel() {
+    return sharedPref.getInt("selectedChannel",0);
+  }
 
-  @DefaultString("")
-  String channelAnglesRight();
+  void selectedChannel(int value) {
+    SharedPreferences.Editor editor = sharedPref.edit();
+    editor.putInt("selectedChannel",value);
+    editor.apply();
+  }
 
+  String channelAnglesLeft() {
+    return sharedPref.getString("channelAnglesLeft","");
+  }
+
+  String channelAnglesRight() {
+    return sharedPref.getString("channelAnglesRight","");
+  }
+
+  void channelAnglesLeft(String value){
+    SharedPreferences.Editor editor = sharedPref.edit();
+    editor.putString("channelAnglesLeft",value);
+    editor.apply();
+  }
+
+  void channelAnglesRight(String value){
+    SharedPreferences.Editor editor = sharedPref.edit();
+    editor.putString("channelAnglesRight",value);
+    editor.apply();
+  }
 }
 
