@@ -30,8 +30,11 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     compileOnly "com.google.android.things:androidthings:${rootProject.ext.thingsVersion}"
+    implementation "com.android.support:support-annotations:${rootProject.ext.supportVersion}"
+
     testImplementation "com.google.android.things:androidthings:${rootProject.ext.thingsVersion}"
     testImplementation "junit:junit:4.12"
+    testImplementation "com.android.support:support-annotations:${rootProject.ext.supportVersion}"
     testImplementation "com.android.support.test:runner:${rootProject.ext.testRunnerVersion}"
     testImplementation "com.android.support.test:rules:${rootProject.ext.testRunnerVersion}"
     testImplementation "org.mockito:mockito-core:${rootProject.ext.mockitoVersion}"
