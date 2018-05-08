@@ -61,7 +61,7 @@ import nz.org.winters.android.libpca9685.PCA9685Servo;
  */
 
 //@EActivity(R.layout.main_activity)
-public class MainActivity extends Activity implements OnPermissionCallback {
+public class MainActivity extends Activity { //implements OnPermissionCallback {
   private static final String TAG = MainActivity.class.getSimpleName();
 
   //    @Pref
@@ -100,7 +100,7 @@ public class MainActivity extends Activity implements OnPermissionCallback {
 
   private List<Integer> channelLeftAngles = new ArrayList<>(16);
   private List<Integer> channelRightAngles = new ArrayList<>(16);
-  private PermissionHelper permissionHelper;
+//  private PermissionHelper permissionHelper;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -108,10 +108,10 @@ public class MainActivity extends Activity implements OnPermissionCallback {
     setContentView(R.layout.main_activity);
     appPrefs = new AppPrefs(this);
 
-    permissionHelper = PermissionHelper.getInstance(this, this);
-    permissionHelper.setForceAccepting(true).request("com.google.android.things.permission.MODIFY_SCREEN_SETTINGS");
-    permissionHelper.setForceAccepting(true).request("com.google.android.things.permission.CHANGE_TIME");
-    permissionHelper.setForceAccepting(true).request("com.google.android.things.permission.USE_PERIPHERAL_IO");
+//    permissionHelper = PermissionHelper.getInstance(this, this);
+//    permissionHelper.setForceAccepting(true).request("com.google.android.things.permission.MODIFY_SCREEN_SETTINGS");
+//    permissionHelper.setForceAccepting(true).request("com.google.android.things.permission.CHANGE_TIME");
+//    permissionHelper.setForceAccepting(true).request("com.google.android.things.permission.USE_PERIPHERAL_IO");
 
     TimeManager timeManager = TimeManager.getInstance();
     timeManager.setTimeZone("Pacific/Auckland");
@@ -263,41 +263,41 @@ public class MainActivity extends Activity implements OnPermissionCallback {
   }
 
 
-  @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                         @NonNull int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
-  }
-
-  @Override
-  public void onPermissionGranted(@NonNull String[] permissionName) {
-    Log.d(TAG, "onPermissionGranted: " + permissionName[0]);
-  }
-
-  @Override
-  public void onPermissionDeclined(@NonNull String[] permissionName) {
-    Log.d(TAG, "onPermissionDeclined: " + permissionName[0]);
-  }
-
-  @Override
-  public void onPermissionPreGranted(@NonNull String permissionsName) {
-    Log.d(TAG, "onPermissionPreGranted: " + permissionsName);
-  }
-
-  @Override
-  public void onPermissionNeedExplanation(@NonNull String permissionName) {
-    Log.d(TAG, "onPermissionNeedExplanation: " + permissionName);
-  }
-
-  @Override
-  public void onPermissionReallyDeclined(@NonNull String permissionName) {
-    Log.d(TAG, "onPermissionReallyDeclined: " + permissionName);
-  }
-
-  @Override
-  public void onNoPermissionNeeded() {
-    Log.d(TAG, "onNoPermissionNeeded");
-  }
+//  @Override
+//  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+//                                         @NonNull int[] grantResults) {
+//    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//    permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//  }
+//
+//  @Override
+//  public void onPermissionGranted(@NonNull String[] permissionName) {
+//    Log.d(TAG, "onPermissionGranted: " + permissionName[0]);
+//  }
+//
+//  @Override
+//  public void onPermissionDeclined(@NonNull String[] permissionName) {
+//    Log.d(TAG, "onPermissionDeclined: " + permissionName[0]);
+//  }
+//
+//  @Override
+//  public void onPermissionPreGranted(@NonNull String permissionsName) {
+//    Log.d(TAG, "onPermissionPreGranted: " + permissionsName);
+//  }
+//
+//  @Override
+//  public void onPermissionNeedExplanation(@NonNull String permissionName) {
+//    Log.d(TAG, "onPermissionNeedExplanation: " + permissionName);
+//  }
+//
+//  @Override
+//  public void onPermissionReallyDeclined(@NonNull String permissionName) {
+//    Log.d(TAG, "onPermissionReallyDeclined: " + permissionName);
+//  }
+//
+//  @Override
+//  public void onNoPermissionNeeded() {
+//    Log.d(TAG, "onNoPermissionNeeded");
+//  }
 
 }

@@ -3,7 +3,7 @@
     package="nz.org.winters.android.androidthingspca9685"
     >
     <uses-permission android:name="com.google.android.things.permission.MODIFY_SCREEN_SETTINGS"/>
-    <uses-permission android:name="com.google.android.things.permission.CHANGE_TIME"/>
+    <!--<uses-permission android:name="com.google.android.things.permission.CHANGE_TIME"/>-->
     <uses-permission android:name="com.google.android.things.permission.SET_TIME"/>
     <uses-permission android:name="com.google.android.things.permission.USE_PERIPHERAL_IO"/>
 
@@ -20,7 +20,7 @@
 
 
         <activity android:name="nz.org.winters.android.androidthingspca9685.MainActivity"
-            android:screenOrientation="reverseLandscape">
+           >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
