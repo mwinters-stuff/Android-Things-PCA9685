@@ -1,0 +1,15 @@
+{
+    "title": "PCA9685",
+    "category": "Driver for the PCA9685 PWM Output and Servos",
+    "published-maven": {
+        "maven-url": "https://jitpack.io",
+        "groupid": "com.github.wintersandroid",
+        "artifactid": "Android-Things-PCA9685"
+    },
+    "compatible-with": [
+        {
+            "title": "PCA9685",
+            "url": "https://learn.adafruit.com/adafruit-16-channel-pwm-servo-hat-for-raspberry-pi"
+        }
+    ]
+}
